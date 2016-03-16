@@ -1,6 +1,6 @@
 from flask import Flask
 import unirest
-import config
+#import config
 app = Flask(__name__)
 
 #response = unirest.get("http://api.wunderground.com/api/" + config.api_key['wunderground'] + "/conditions/q/CO/Denver.json")
