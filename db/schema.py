@@ -1,11 +1,13 @@
 import sys
 import psycopg2
 sys.path.append("Users/Billy/Git/First_Chair_Server/db")
-
+import db_config as config
 from sqlalchemy import *
+
 meta = MetaData()
-engine = create_engine('postgresql://localhost/firstchair')
+engine = create_engine(config.db_var['url'])
 connection = engine.connect()
+
 user = Table("user", meta,
   Column("id", Integer, primary_key=True),
   Column("google_id", Integer),
@@ -47,7 +49,7 @@ user_place.create(engine, checkfirst=True)
 snowfall.create(engine, checkfirst=True)
 travel_time.create(engine, checkfirst=True)
 #connection.close()
-#print "connection closed"
+print "schema migrated"
 #result = connection.execute("select * from roster")
 #for row in result:
 #  print row.player_name
