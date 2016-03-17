@@ -6,6 +6,7 @@ lazy==1.2
 MarkupSafe==0.23
 oauthlib==1.0.3
 poster==0.8.1
+psycopg2==2.6.1
 request==0.0.2
 requests==2.9.1
 requests-oauthlib==0.6.1
