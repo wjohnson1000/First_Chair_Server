@@ -1,7 +1,7 @@
 import sys
 sys.path.append("Users/Billy/Git/First_Chair_Server/process")
 print sys.path
-import process.processconfig
+import process.processconfig as config
 import unirest
-response = unirest.get("http://api.wunderground.com/api/" + processconfig.api_key['wunderground'] + "/conditions/q/CO/Denver.json")
+response = unirest.get("http://api.wunderground.com/api/" + config.api_key['wunderground'] + "/conditions/q/CO/Denver.json")
 print response.body
