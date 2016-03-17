@@ -1,12 +1,11 @@
 import sys
-sys.path.append("app/process")
-sys.path.append("app/db")
-#sys.path.append("Users/Billy/Git/First_Chair_Server/process")
-#sys.path.append("Users/Billy/Git/First_Chair_Server/db")
-import psycopg2
+sys.path.append("Users/Billy/Git/First_Chair_Server/process")
+sys.path.append("Users/Billy/Git/First_Chair_Server/db")
+print sys.path
 import process.processconfig as api_config
 import db.db_config as db_config
 import unirest
+import psycopg2
 from sqlalchemy import *
 
 #meta = MetaData()
