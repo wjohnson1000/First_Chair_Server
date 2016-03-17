@@ -2,8 +2,8 @@ import sys
 sys.path.append("Users/Billy/Git/First_Chair_Server/process")
 sys.path.append("Users/Billy/Git/First_Chair_Server/db")
 import psycopg2
-import db.db_config as db_config
 import process.processconfig as api_config
+import db.db_config as db_config
 import unirest
 from sqlalchemy import *
 
