@@ -1,5 +1,6 @@
 import sys
-sys.path.append("Users/Billy/Git/First_Chair_Server")
+sys.path.append("app/process")
+sys.path.append("app/db")
 #sys.path.append("Users/Billy/Git/First_Chair_Server/process")
 #sys.path.append("Users/Billy/Git/First_Chair_Server/db")
 import psycopg2
