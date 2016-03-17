@@ -1,2 +1,2 @@
-web: python server.py ${PORT}
+web: python server.py
 worker: python process/getweather.py
