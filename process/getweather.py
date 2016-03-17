@@ -1,5 +1,5 @@
-import modules.processconfig as api_config
-import modules.db_config as db_config
+import processconfig as api_config
+import db_config as db_config
 #import process.processconfig as api_config
 #import db.db_config as db_config
 import unirest
