@@ -1,7 +1,5 @@
-#import processconfig as api_config
-#import db_config as db_config
-#import modules.processconfig as api_config
-#import db.db_config as db_config
+import modules.processconfig as api_config
+import modules.db_config as db_config
 import datetime
 import unirest
 import os
@@ -36,7 +34,6 @@ engine = create_engine(db_url, echo=True)
 connection = engine.connect()
 Session = sessionmaker(bind=engine)
 session = Session()
-#print response.body
 
 #USE SESSION.COMMIT() FOR MASS TRX?
 
