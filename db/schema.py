@@ -25,7 +25,8 @@ place = Table("place", meta,
   Column("id", Integer, primary_key=True),
   Column("address", String),
   Column("city", String),
-  Column("state", String(10))
+  Column("state", String(10)),
+  Column("is_destination", Boolean)
 )
 
 snowfall = Table("snowfall", meta,
