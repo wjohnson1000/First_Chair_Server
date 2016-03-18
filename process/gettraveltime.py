@@ -22,7 +22,7 @@ class place(Base):
   state = Column(String(10))
 
 class user(Base):
-  __tablename__ = 'public.user'
+  __tablename__ = 'user'
   id = Column(Integer, primary_key=True)
   google_id = Column(Integer)
   snowfall_alarm = Column(Integer)
@@ -33,7 +33,7 @@ class travel_time(Base):
   __tablename__ = 'travel_time'
   id = Column(Integer, primary_key=True)
   place_id = Column(Integer, ForeignKey('place.id'))
-  user_id = Column(Integer, ForeignKey('public.user.id'))
+  user_id = Column(Integer, ForeignKey('user.id'))
   travel_time = Column(Integer)
   time = Column(DateTime, default=datetime.datetime.now)
   
