@@ -21,6 +21,14 @@ class place(Base):
   city = Column(String)
   state = Column(String(10))
 
+class user(Base):
+  __tablename__ = 'public.user'
+  id = Column(Integer, primary_key=True)
+  google_id = Column(Integer)
+  snowfall_alarm = Column(Integer)
+  travel_window = Column(String(10))
+  place_id = Column(Integer, ForeignKey('place.id'))
+
 class travel_time(Base):
   __tablename__ = 'travel_time'
   id = Column(Integer, primary_key=True)
