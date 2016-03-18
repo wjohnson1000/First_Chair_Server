@@ -1,7 +1,8 @@
 #import processconfig as api_config
 #import db_config as db_config
-import modules.processconfig as api_config
+#import modules.processconfig as api_config
 #import db.db_config as db_config
+import datetime
 import unirest
 import os
 import psycopg2
@@ -9,10 +10,10 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
 
-#weather_key = os.environ.get("WUNDERGROUND_API_KEY")
-weather_key = api_config.api_key['wunderground']
-#db_url = os.environ.get("DATABASE_URL")
-db_url = "postgres://localhost/firstchair"
+weather_key = os.environ.get("WUNDERGROUND_API_KEY")
+db_url = os.environ.get("DATABASE_URL")
+#weather_key = api_config.api_key['wunderground']
+#db_url = "postgres://localhost/firstchair"
 
 Base = declarative_base()
 class place(Base):
@@ -22,6 +23,14 @@ class place(Base):
   address = Column(String)
   city = Column(String)
   state = Column(String(10))
+
+class snowfall(Base):
+  __tablename__ = 'snowfall'
+
+  id = Column(Integer, primary_key=True)
+  place_id = Column(Integer, ForeignKey('place.id'))
+  snowfall = Column(Integer)
+  time = Column(DateTime, default=datetime.datetime.now)
 
 engine = create_engine(db_url, echo=True)
 connection = engine.connect()
@@ -33,4 +42,14 @@ session = Session()
 
 for place in session.query(place):
   response = unirest.get("http://api.wunderground.com/api/" + weather_key + "/conditions/q/" + place.state + "/" + place.city + ".json")
-  print response.body
+  snow = response.body['current_observation']['precip_1hr_in']
+  snow = int(float(snow))
+  if snow < 0:
+    snow = 0
+  print snow
+  session.add(snowfall(place_id=place.id, snowfall=snow))
+
+session.commit()
+
+
+
