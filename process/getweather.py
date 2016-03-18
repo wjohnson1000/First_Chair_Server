@@ -44,12 +44,11 @@ for place in session.query(place):
   response = unirest.get("http://api.wunderground.com/api/" + weather_key + "/conditions/q/" + place.state + "/" + place.city + ".json")
   snow = response.body['current_observation']['precip_1hr_in']
   snow = int(float(snow))
-  if snow < 0:
-    snow = 0
+  if snow > 0:
+    session.add(snowfall(place_id=place.id, snowfall=snow))
   print snow
-  session.add(snowfall(place_id=place.id, snowfall=snow))
 
 session.commit()
 
-
+connection.close()
 
