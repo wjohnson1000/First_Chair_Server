@@ -45,6 +45,9 @@ session = Session()
 
 selecteduser = session.query(user).first()
 print selecteduser.place_id
-#gresponse = unirest.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins=Vancouver+BC|Seattle&destinations=San+Francisco|Victoria+BC&key=" + google_key)
+home = session.query(place).filter(place.id == selecteduser.place_id)
+destination = session.query(place).filter(place.id == 2)
 
-#print gresponse.body
+gresponse = unirest.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + home.address + "+" + home.city + "+" + home.state + "&destinations=" + destination.address + "+" + destination.city + "+" + destination.state + "&key=" + google_key)
+
+print gresponse.body
