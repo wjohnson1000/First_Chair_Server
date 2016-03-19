@@ -46,9 +46,8 @@ session = Session()
 selecteduser = session.query(user).first()
 homeid =  selecteduser.place_id
 print homeid
-home = session.query(place).filter(place.id == homeid)
 destination = session.query(place).filter(place.id == 2)
-print destination
+print destination.id
 
 #gresponse = unirest.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + home.address + "+" + home.city + "+" + home.state + "&destinations=" + destination.address + "+" + destination.city + "+" + destination.state + "&key=" + google_key)
 
