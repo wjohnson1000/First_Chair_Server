@@ -7,13 +7,39 @@ from oauth2client import client
 
 app = Flask(__name__)
 
-#gresponse = unirest.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins=Vancouver+BC|Seattle&destinations=San+Francisco|Victoria+BC&key=" + config.api_key['google'])
-#print response.body
-
 @app.route("/")
-def hello():
-    return "Hello World"
+def index():
+  if 'credentials' not in flask.session:
+    return flask.redirect(flask.url_for('callback'))
+  credentials = client.OAuth2Credentials.from_json(flask.session['credentials'])
+  if credentials.access_token_expired:
+    return flask.redirect(flask.url_for('callback'))
+  else:
+    http_auth = credentials.authorize(httplib2.Http())
+    drive_service = discovery.build('drive', 'v2', http_auth)
+    files = drive_service.files().list().execute()
+    return json.dumps(files)
+
+
+@app.route('/callback')
+def oauth2callback():
+  flow = client.flow_from_clientsecrets(
+      'client_secrets.json',
+      scope='https://www.googleapis.com/auth/drive.metadata.readonly',
+      redirect_uri=flask.url_for('oauth2callback', _external=True),
+      include_granted_scopes=True)
+  if 'code' not in flask.request.args:
+    auth_uri = flow.step1_get_authorize_url()
+    return flask.redirect(auth_uri)
+  else:
+    auth_code = flask.request.args.get('code')
+    credentials = flow.step2_exchange(auth_code)
+    flask.session['credentials'] = credentials.to_json()
+    return flask.redirect(flask.url_for('index'))
 
 if __name__ == "__main__":
-    PORT = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=PORT)
+  PORT = int(os.environ.get("PORT", 5000))
+  import uuid
+  app.secret_key = str(uuid.uuid4())
+  app.run(host='0.0.0.0', port=PORT)
+
