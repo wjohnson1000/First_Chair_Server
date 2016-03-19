@@ -22,7 +22,7 @@ class place(Base):
   state = Column(String(10))
 
 class user(Base):
-  __tablename__ = 'user'
+  __tablename__ = 'public.user'
   id = Column(Integer, primary_key=True)
   google_id = Column(Integer)
   snowfall_alarm = Column(Integer)
@@ -44,8 +44,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 selecteduser = session.query(user).first()
-print selecteduser.place_id
-homeid = selecteduser.place_id
+homeid =  selecteduser.place_id
 home = session.query(place).filter(place.id == homeid)
 print home
 destination = session.query(place).filter(place.id == 2)
