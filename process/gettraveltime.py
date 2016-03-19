@@ -45,8 +45,8 @@ session = Session()
 
 selecteduser = session.query(user).first()
 homeid =  selecteduser.place_id
+print homeid
 home = session.query(place).filter(place.id == homeid)
-print home.id
 destination = session.query(place).filter(place.id == 2)
 print destination
 
