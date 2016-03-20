@@ -1,4 +1,5 @@
 from flask import *
+import jwt
 import os
 import json
 import httplib2
@@ -37,6 +38,7 @@ def oauth2callback():
     return redirect(auth_uri)
   else:
     auth_code = request.args.get('code')
+    token = jwt.encode({'auth_code': auth_code}, 'secret', algorithm='HS256')
     credentials = flow.step2_exchange(auth_code)
     session['credentials'] = credentials.to_json()
     return redirect(url_for('index'))
