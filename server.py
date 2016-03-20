@@ -3,7 +3,7 @@ import jwt
 import os
 import json
 import httplib2
-import clientconfig
+#import clientconfig
 from apiclient import discovery
 from oauth2client import client as client
 
@@ -30,7 +30,7 @@ def index():
 
 @app.route('/callback')
 def oauth2callback():
-  flow = client.flow_from_clientsecrets('client_secrets.json',
+  flow = client.flow_from_clientsecrets('secrets_from_env.json',
     scope='https://www.googleapis.com/auth/plus.login',
     redirect_uri=url_for('oauth2callback', _external=True))
   if 'code' not in request.args:
