@@ -24,13 +24,6 @@ with open('secrets_from_env.json', 'w') as f:
 
 app = Flask(__name__)
 
-#for DEPLOYMENT
-#flow = OAuth2WebServerFlow(client_id='your_client_id',
-#                           client_secret='your_client_secret',
-#                           scope='https://www.googleapis.com/auth/calendar',
-#                           redirect_uri='http://example.com/auth_return')
-
-
 
 @app.route("/")
 def index():
@@ -56,7 +49,7 @@ def oauth2callback():
     token = jwt.encode({'auth_code': auth_code}, 'secret', algorithm='HS256')
     credentials = flow.step2_exchange(auth_code)
     session['credentials'] = credentials.to_json()
-    return token.to_json()
+    return flask.jsonify(token)
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
