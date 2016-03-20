@@ -49,7 +49,7 @@ def oauth2callback():
     token = jwt.encode({'auth_code': auth_code}, 'secret', algorithm='HS256')
     credentials = flow.step2_exchange(auth_code)
     session['credentials'] = credentials.to_json()
-    return "well?"
+    return redirect('http://127.0.0.1:8080/')
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
