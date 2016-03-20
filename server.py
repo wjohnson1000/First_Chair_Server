@@ -51,8 +51,8 @@ def oauth2callback():
     session['credentials'] = credentials.to_json()
     resp = Response("hello")
     resp.headers['token'] = token
-    #return resp
-    return redirect('http://127.0.0.1:8080/dashboard&token=' + token)
+    return resp
+    #return redirect('http://127.0.0.1:8080/dashboard&token=' + token)
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
