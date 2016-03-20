@@ -43,7 +43,7 @@ def oauth2callback():
     redirect_uri=url_for('oauth2callback', _external=True))
   if 'code' not in request.args:
     auth_uri = flow.step1_get_authorize_url()
-    return redirect(auth_uri)
+    return auth_uri
   else:
     auth_code = request.args.get('code')
     token = jwt.encode({'auth_code': auth_code}, 'secret', algorithm='HS256')
@@ -51,8 +51,8 @@ def oauth2callback():
     session['credentials'] = credentials.to_json()
     resp = flask.Response("hello")
     resp.headers['token'] = token
-    return resp
-    #return redirect('http://127.0.0.1:8080/dashboard&token=' + token)
+    #return resp
+    return redirect('http://127.0.0.1:8080/dashboard&token=' + token)
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
