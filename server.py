@@ -43,7 +43,8 @@ def oauth2callback():
     redirect_uri=url_for('oauth2callback', _external=True))
   if 'code' not in request.args:
     auth_uri = flow.step1_get_authorize_url()
-    return redirect(auth_uri)
+    #return redirect(auth_uri)
+    return "hello?"
   else:
     auth_code = request.args.get('code')
     token = jwt.encode({'auth_code': auth_code}, 'secret', algorithm='HS256')
