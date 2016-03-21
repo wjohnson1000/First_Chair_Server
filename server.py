@@ -6,6 +6,46 @@ import httplib2
 #import clientconfig
 from apiclient import discovery
 from oauth2client import client as client
+import datetime
+import psycopg2
+from sqlalchemy import *
+from sqlalchemy.orm import *
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+class place(Base):
+  __tablename__ = 'place'
+  id = Column(Integer, primary_key=True)
+  address = Column(String)
+  city = Column(String)
+  state = Column(String(10))
+  is_destination = Column(Boolean)
+
+class user(Base):
+  __tablename__ = 'user'
+  id = Column(Integer, primary_key=True)
+  google_id = Column(Integer)
+  snowfall_alarm = Column(Integer)
+  travel_window = Column(String(10))
+  place_id = Column(Integer, ForeignKey('place.id'))
+
+class user_place(Base):
+  __tablename__ = 'user_place'
+  user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+  place_id = Column(Integer, ForeignKey('place.id'), primary_key=True)
+
+class travel_time(Base):
+  __tablename__ = 'travel_time'
+  id = Column(Integer, primary_key=True)
+  place_id = Column(Integer, ForeignKey('place.id'))
+  user_id = Column(Integer, ForeignKey('user.id'))
+  travel_time = Column(Integer)
+  time = Column(DateTime, default=datetime.datetime.now)
+
+google_key = os.environ.get("GOOGLE_API_KEY")
+db_url = os.environ.get("DATABASE_URL")
+
 
 client_info = {
   "web": {
@@ -35,6 +75,13 @@ def index():
   else:
     return flask.jsonify(credentials)
 
+@app.route("/route")
+def routeInfo():
+  engine = create_engine(db_url, echo=True)
+  connection = engine.connect()
+  Session = sessionmaker(bind=engine)
+  session = Session()
+  return "hey"
 
 @app.route('/callback')
 def oauth2callback():
