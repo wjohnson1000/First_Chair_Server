@@ -83,7 +83,7 @@ def index():
 def routeInfo():
   this_user = sesh.query(user).first()
   destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
-  resp = make_response(this_user.id)
+  resp = make_response(this_user)
 
   return resp
 
