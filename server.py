@@ -78,7 +78,7 @@ def index():
   if credentials.access_token_expired:
     return redirect(flask.url_for('oauth2callback'))
   else:
-    return redirect('http://127.0.0.1:8080/dashboard')
+    return redirect('http://127.0.0.1:8080/#/dashboard')
 
 
 @app.route('/callback')
@@ -95,7 +95,7 @@ def oauth2callback():
     credentials = flow.step2_exchange(auth_code)
     session['credentials'] = credentials.to_json()
     #return resp
-    return redirect('http://127.0.0.1:8080/dashboard&token=' + token)
+    return redirect('http://127.0.0.1:8080/#/dashboard&token=' + token)
 
 @app.route("/route")
 def routeInfo():
