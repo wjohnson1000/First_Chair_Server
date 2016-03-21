@@ -95,7 +95,7 @@ def oauth2callback():
     credentials = flow.step2_exchange(auth_code)
     session['credentials'] = credentials.to_json()
     #return resp
-    return redirect('127.0.0.1:8080&token=' + token)
+    return redirect('127.0.0.1:8080/#/dashboard&token=' + token)
 
 @app.route("/route")
 def routeInfo():
