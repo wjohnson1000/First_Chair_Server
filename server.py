@@ -81,6 +81,9 @@ def routeInfo():
   connection = engine.connect()
   Session = sessionmaker(bind=engine)
   session = Session()
+  user = session.query(user).first()
+  print user
+  destinations = session.query(user_place).filter(user_place.user_id == user.id).all()
   return "hey"
 
 @app.route('/callback')
