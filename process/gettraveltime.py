@@ -59,22 +59,24 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 users = session.query(user).all()
-for user in users:
-  homeid =  user.place_id
-  print homeid
-  home = session.query(place).filter(place.id == homeid).one()
-  print home.city
-  destinations = session.query(user_place).filter(user_place.user_id == user.id).all()
-  for destination in destinations:
-    destination = session.query(place).filter(place.id == destination.place_id).one()
-    print destination.city
-  
-    gresponse = unirest.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + home.address + "+" + home.city + "+" + home.state + "&destinations=" + destination.address + "+" + destination.city + "+" + destination.state + "&key=" + google_key)
+if (datetime.datetime.now().hour >= 5 and
+    datetime.datetime.now().hour < 11):
+  for user in users:
+    homeid =  user.place_id
+    print homeid
+    home = session.query(place).filter(place.id == homeid).one()
+    print home.city
+    destinations = session.query(user_place).filter(user_place.user_id == user.id).all()
+    for destination in destinations:
+      destination = session.query(place).filter(place.id == destination.place_id).one()
+      print destination.city
     
-    trip_time = gresponse.body['rows'][0]['elements'][0]['duration']['value']
-    print trip_time 
-    trip = travel_time(place_id = destination.id, user_id = user.id, travel_time = trip_time)
-    session.add(trip)
+      gresponse = unirest.get("https://maps.googleapis.com/maps/api/distancematrix/json?origins=" + home.address + "+" + home.city + "+" + home.state + "&destinations=" + destination.address + "+" + destination.city + "+" + destination.state + "&key=" + google_key)
+      
+      trip_time = gresponse.body['rows'][0]['elements'][0]['duration']['value']
+      print trip_time 
+      trip = travel_time(place_id = destination.id, user_id = user.id, travel_time = trip_time)
+      session.add(trip)
 
 for place in session.query(place):
 #  response = unirest.get("http://api.wunderground.com/api/" + weather_key + "/conditions/q/" + place.state + "/" + place.city + ".json")
