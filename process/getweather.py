@@ -4,6 +4,7 @@ import datetime
 import unirest
 import os
 import psycopg2
+from random import randint
 from sqlalchemy import *
 from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
@@ -35,14 +36,12 @@ connection = engine.connect()
 Session = sessionmaker(bind=engine)
 session = Session()
 
-#USE SESSION.COMMIT() FOR MASS TRX?
 
 for place in session.query(place):
-  response = unirest.get("http://api.wunderground.com/api/" + weather_key + "/conditions/q/" + place.state + "/" + place.city + ".json")
-  snow = response.body['current_observation']['precip_1hr_in']
-  snow = int(float(snow))
-  if snow > 0:
-    session.add(snowfall(place_id=place.id, snowfall=snow))
+#  response = unirest.get("http://api.wunderground.com/api/" + weather_key + "/conditions/q/" + place.state + "/" + place.city + ".json")
+#  snow = response.body['current_observation']['precip_1hr_in']
+  snow = randint(0,10)
+  session.add(snowfall(place_id=place.id, snowfall=snow))
   print snow
 
 session.commit()
