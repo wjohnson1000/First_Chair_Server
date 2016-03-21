@@ -9,6 +9,7 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from sqlalchemy.ext.declarative import declarative_base
 
+weather_key = os.environ.get("WUNDERGROUND_API_KEY")
 google_key = os.environ.get("GOOGLE_API_KEY")
 db_url = os.environ.get("DATABASE_URL")
 
@@ -43,6 +44,13 @@ class travel_time(Base):
   travel_time = Column(Integer)
   time = Column(DateTime, default=datetime.datetime.now)
   
+class snowfall(Base):
+  __tablename__ = 'snowfall'
+
+  id = Column(Integer, primary_key=True)
+  place_id = Column(Integer, ForeignKey('place.id'))
+  snowfall = Column(Integer)
+  time = Column(DateTime, default=datetime.datetime.now)
 
 engine = create_engine(db_url, echo=True)
 connection = engine.connect()
@@ -66,5 +74,13 @@ for user in users:
     print trip_time 
     trip = travel_time(place_id = destination.id, user_id = user.id, travel_time = trip_time)
     session.add(trip)
+
+for place in session.query(place):
+#  response = unirest.get("http://api.wunderground.com/api/" + weather_key + "/conditions/q/" + place.state + "/" + place.city + ".json")
+#  snow = response.body['current_observation']['precip_1hr_in']
+  snow = randint(0,10)
+  session.add(snowfall(place_id=place.id, snowfall=snow))
+  print snow
+
 
 session.commit()
