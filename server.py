@@ -50,7 +50,7 @@ def oauth2callback():
     credentials = flow.step2_exchange(auth_code)
     session['credentials'] = credentials.to_json()
     #return resp
-    return token
+    return redirect('127.0.0.1:8080&token=' + token)
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
