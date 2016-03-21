@@ -85,7 +85,7 @@ def routeInfo():
   destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   #resp = make_response(this_user)
 
-  return this_user.jsonify
+  return jsonify(this_user)
 
 @app.route('/callback')
 def oauth2callback():
