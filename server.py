@@ -67,7 +67,7 @@ app = Flask(__name__)
 engine = create_engine(db_url, echo=True)
 connection = engine.connect()
 Session = sessionmaker(bind=engine)
-session = Session()
+sesh = Session()
 
 @app.route("/")
 def index():
@@ -81,7 +81,7 @@ def index():
 
 @app.route("/route")
 def routeInfo():
-  user = session.query(user).first()
+  user = sesh.query(user).first()
   destinations = session.query(user_place).filter(user_place.user_id == user.id).all()
   return "hey"
 
