@@ -108,8 +108,8 @@ def routeInfo():
 def forecast():
   this_place = sesh.query(place).filter(place.city == "Vail").one()
   forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + this_place.state + "/" + this_place.city + ".json")
-  print forecast.body
-  return jsonify({'isSnow': forecast.body})
+  print forecast.body.response.forecast
+  return jsonify({'isSnow': forecast.body.response.forecast})
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
