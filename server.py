@@ -104,7 +104,7 @@ def routeInfo():
   return jsonify({'user': this_user.id})
 
 @app.route("/forecast")
-def routeInfo():
+def forecast():
   this_place = sesh.query(place).filter(place.city == "Vail").one()
   forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + this_place.state + "/" + this_place.city + ".json")
   return jsonify({'isSnow': forecast.simpleforecast.forecastday})
