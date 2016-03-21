@@ -83,7 +83,7 @@ def index():
 def routeInfo():
   user = session.query(user).first()
   destinations = session.query(user_place).filter(user_place.user_id == user.id).all()
-  return user.id
+  return "hey"
 
 @app.route('/callback')
 def oauth2callback():
