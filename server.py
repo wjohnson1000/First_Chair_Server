@@ -3,7 +3,7 @@ import jwt
 import os
 import json
 import httplib2
-#import clientconfig
+import unirest
 from apiclient import discovery
 from oauth2client import client as client
 import datetime
@@ -79,13 +79,6 @@ def index():
   else:
     return flask.jsonify(credentials)
 
-@app.route("/route")
-def routeInfo():
-  this_user = sesh.query(user).first()
-  destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
-  #resp = make_response(this_user)
-
-  return jsonify({'user': this_user.id})
 
 @app.route('/callback')
 def oauth2callback():
@@ -102,6 +95,19 @@ def oauth2callback():
     session['credentials'] = credentials.to_json()
     #return resp
     return redirect('127.0.0.1:8080&token=' + token)
+
+@app.route("/route")
+def routeInfo():
+  this_user = sesh.query(user).first()
+  destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
+  #resp = make_response(this_user)
+  return jsonify({'user': this_user.id})
+
+@app.route("/forecast")
+def routeInfo():
+  this_place = sesh.query(place).filter(place.city == "Vail").one()
+  forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + this_place.state + "/" + this_place.city + ".json")
+  return jsonify({'isSnow': forecast.simpleforecast.forecastday})
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
