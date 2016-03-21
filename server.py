@@ -83,7 +83,7 @@ def index():
 def routeInfo():
   this_user = sesh.query(user).first()
   destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
-  return "hey"
+  return this_user.id
 
 @app.route('/callback')
 def oauth2callback():
