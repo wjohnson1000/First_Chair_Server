@@ -6,6 +6,7 @@ import httplib2
 import unirest
 from apiclient import discovery
 from oauth2client import client as client
+from oauth2client.contrib.flask_util import UserOAuth2
 import datetime
 import psycopg2
 from sqlalchemy import *
@@ -101,6 +102,7 @@ def oauth2callback():
 def routeInfo():
   this_user = sesh.query(user).first()
   destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
+  
   #resp = make_response(this_user)
   return jsonify({'user': this_user.id})
 
