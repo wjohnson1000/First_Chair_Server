@@ -1,5 +1,3 @@
-import modules.processconfig as api_config
-import modules.db_config as db_config
 import datetime
 import unirest
 import os
