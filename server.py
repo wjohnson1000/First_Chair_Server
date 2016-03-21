@@ -78,7 +78,7 @@ def index():
   if credentials.access_token_expired:
     return redirect(flask.url_for('oauth2callback'))
   else:
-    return flask.jsonify(credentials)
+    return redirect('127.0.0.1:8080/#/dashboard')
 
 
 @app.route('/callback')
