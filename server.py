@@ -82,7 +82,7 @@ def index():
 @app.route("/route")
 def routeInfo():
   this_user = sesh.query(user).first()
-  destinations = session.query(user_place).filter(user_place.user_id == this_user.id).all()
+  destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   return "hey"
 
 @app.route('/callback')
