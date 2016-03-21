@@ -43,6 +43,7 @@ class travel_time(Base):
   travel_time = Column(Integer)
   time = Column(DateTime, default=datetime.datetime.now)
 
+weather_key = os.environ.get("WUNDERGROUND_API_KEY")
 google_key = os.environ.get("GOOGLE_API_KEY")
 db_url = os.environ.get("DATABASE_URL")
 
