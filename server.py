@@ -135,7 +135,7 @@ def routeInfo():
         basecount = basecount + 1
       if graphData[i - 1]['snowfall'] == 0 and graphData[i]['snowfall'] != 0:
         graphData[i - 1]['nextdaydrive'] = basevalue / basecount
-    graphData = graphData[i-2:len(graphData)]
+    graphData = graphData[count-1:len(graphData)]
     forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + destination.state + "/" + destination.city + ".json")
     dest_obj = {}
     dest_obj['forecast'] = forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']
