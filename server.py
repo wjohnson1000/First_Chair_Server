@@ -107,12 +107,22 @@ def routeInfo():
   user_places = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   for destination in user_places:
     destination = sesh.query(place).filter(place.id == destination.place_id).one()
+    accumulations = sesh.query(snowfall).filter(snowfall.place_id == destination.id).all()
+    drives = sesh.query(travel_time).filter(travel_time.place_id == destination.id).all()
+    snowfall = [];
+    for accumulation in accumulations:
+      snowfall.append(accumulation.snowfall);
+    drive_time = [];
+    for drive in drives:
+      drive_time.append(drive.travel_time);
     forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + destination.state + "/" + destination.city + ".json")
     dest_obj = {}
     dest_obj['forecast'] = forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']
     dest_obj['address'] = destination.address
     dest_obj['city'] = destination.city
     dest_obj['state'] = destination.state
+    dest_obj['snowfall'] = snowfall
+    dest_obj['travel_time'] = drive_time
     places.append(dest_obj)
   return jsonify({'destinations': places})
 
