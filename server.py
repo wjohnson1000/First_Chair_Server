@@ -105,7 +105,8 @@ def routeInfo():
   for each in destinations:
     places.append(each)
   #resp = make_response(this_user)
-  return jsonify({'destinations': places})
+  #return jsonify({'destinations': places})
+  return places
 
 @app.route("/forecast")
 def forecast():
