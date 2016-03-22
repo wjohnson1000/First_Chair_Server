@@ -130,7 +130,7 @@ def routeInfo():
     basevalue = 0
     basecount = 0
     for i in range(len(graphData)):
-      if graphData[i]['snow'] == 0:
+      if graphData[i]['snowfall'] == 0:
         basevalue = basevalue + array[i]['nextdaydrive']
         basecount = basecount + 1
       if graphData[i - 1]['snowfall'] == 0 and array[i]['snowfall'] != 0:
