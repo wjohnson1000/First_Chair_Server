@@ -103,10 +103,13 @@ def routeInfo():
   destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   places = []
   for each in destinations:
-    places.append(each)
+    dest_obj = {}
+    dest_obj['address'] = each.address
+    dest_obj['city'] = each.city
+    dest_obj['state'] = each.state
+    places.append(dest_obj)
   #resp = make_response(this_user)
-  #return jsonify({'destinations': places})
-  return places
+  return jsonify({'destinations': places})
 
 @app.route("/forecast")
 def forecast():
