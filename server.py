@@ -116,9 +116,9 @@ def routeInfo():
     destination = sesh.query(place).filter(place.id == destination.place_id).one()
     accumulations = sesh.query(snowfall).filter(snowfall.place_id == destination.id).all()
     drives = sesh.query(travel_time).filter(travel_time.place_id == destination.id).all()
-    snowfall = [];
+    allsnowfall = [];
     for accumulation in accumulations:
-      snowfall.append(accumulation.snowfall);
+      allsnowfall.append(accumulation.snowfall);
     drive_time = [];
     for drive in drives:
       drive_time.append(drive.travel_time);
@@ -128,7 +128,7 @@ def routeInfo():
     dest_obj['address'] = destination.address
     dest_obj['city'] = destination.city
     dest_obj['state'] = destination.state
-    dest_obj['snowfall'] = snowfall
+    dest_obj['snowfall'] = allsnowfall
     dest_obj['travel_time'] = drive_time
     places.append(dest_obj)
   return jsonify({'destinations': places})
