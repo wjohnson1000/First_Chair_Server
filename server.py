@@ -125,7 +125,7 @@ def routeInfo():
     graphData = [];
     for i in range(len(drive_time) - 1):
       graphData.append({'snowfall': allsnowfall[i], 'nextdaydelay': drive_time[i+1]})
-    graphData = sorted(graphData)
+    graphData = sorted(graphData, key=lambda x: x['snowfall'})
     forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + destination.state + "/" + destination.city + ".json")
     dest_obj = {}
     dest_obj['forecast'] = forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']
