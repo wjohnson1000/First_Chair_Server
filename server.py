@@ -117,8 +117,8 @@ def routeInfo():
   return jsonify({'destinations': places})
 
 
-@app.route("/addroute")
-def routeInfo():
+#@app.route("/addroute")
+#def routeInfo():
   
 
 if __name__ == "__main__":
