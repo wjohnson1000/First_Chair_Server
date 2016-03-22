@@ -99,14 +99,15 @@ def oauth2callback():
 
 @app.route("/route")
 def routeInfo():
-  this_user = sesh.query(user).first()
-  destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   places = []
-  for each in destinations:
+  this_user = sesh.query(user).first()
+  user_places = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
+  for destination in user_places:
+    destination = sesh.query(place).filter(place.id == destination.place_id).one()
     dest_obj = {}
-    dest_obj['address'] = each.address
-    dest_obj['city'] = each.city
-    dest_obj['state'] = each.state
+    dest_obj['address'] = destination.address
+    dest_obj['city'] = destination.city
+    dest_obj['state'] = destination.state
     places.append(dest_obj)
   #resp = make_response(this_user)
   return jsonify({'destinations': places})
