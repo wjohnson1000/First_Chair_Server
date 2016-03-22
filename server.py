@@ -101,8 +101,11 @@ def oauth2callback():
 def routeInfo():
   this_user = sesh.query(user).first()
   destinations = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
+  places = []
+  for each in destinations:
+    places.append(each)
   #resp = make_response(this_user)
-  return jsonify({'user': this_user.id})
+  return jsonify({'destinations': places})
 
 @app.route("/forecast")
 def forecast():
