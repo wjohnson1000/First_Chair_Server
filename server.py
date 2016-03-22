@@ -1,4 +1,5 @@
 from flask import *
+from flask.ext.cors import CORS
 import jwt
 import os
 import json
@@ -65,6 +66,7 @@ with open('secrets_from_env.json', 'w') as f:
   json.dump(client_info, f)
 
 app = Flask(__name__)
+CORS(app)
 
 engine = create_engine(db_url, echo=True)
 connection = engine.connect()
@@ -115,6 +117,9 @@ def routeInfo():
   return jsonify({'destinations': places})
 
 
+@app.route("/addroute")
+def routeInfo():
+  
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
