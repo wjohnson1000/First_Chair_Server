@@ -97,14 +97,16 @@ def oauth2callback():
     #return resp
     return redirect('127.0.0.1:8080&token=' + token)
 
-@app.route("/route")
+@app.route("/dashboard")
 def routeInfo():
   places = []
   this_user = sesh.query(user).first()
   user_places = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   for destination in user_places:
     destination = sesh.query(place).filter(place.id == destination.place_id).one()
+    forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + destination.state + "/" + destination.city + ".json")
     dest_obj = {}
+    dest_obj['forecast'] = forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']
     dest_obj['address'] = destination.address
     dest_obj['city'] = destination.city
     dest_obj['state'] = destination.state
@@ -112,12 +114,10 @@ def routeInfo():
   #resp = make_response(this_user)
   return jsonify({'destinations': places})
 
-@app.route("/forecast")
-def forecast():
-  this_place = sesh.query(place).filter(place.city == "Vail").one()
-  forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + this_place.state + "/" + this_place.city + ".json")
-  print forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']
-  return jsonify({'isSnow': forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']})
+#@app.route("/addroute")
+#def addRoute():
+#  print request
+
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
