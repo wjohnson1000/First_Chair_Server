@@ -117,7 +117,7 @@ def routeInfo():
   user_places = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   for destination in user_places:
     destination = sesh.query(place).filter(place.id == destination.place_id).one()
-    directionstring = 'https://www.google.com/maps/embed/v1/directions?origin=' + home.address + '+' + home.city + '+' + home.state + '&destination=' + destination.address + '+' + destination.city + '+' + destination.state + '&key=' + GOOGLE_CLIENT_KEY
+    directionstring = 'https://www.google.com/maps/embed/v1/directions?origin=' + home.address + '+' + home.city + '+' + home.state + '&destination=' + destination.address + '+' + destination.city + '+' + destination.state + '&key=' + google_client_key
     accumulations = sesh.query(snowfall).filter(snowfall.place_id == destination.id).all()
     drives = sesh.query(travel_time).filter(travel_time.place_id == destination.id).all()
     allsnowfall = [];
