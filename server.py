@@ -141,7 +141,7 @@ def routeInfo():
     graphData = graphData[basecount-1:len(graphData)]
     forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + destination.state + "/" + destination.city + ".json")
     dest_obj = {}
-    dest_obj['directionstring'] = destinationstring
+    dest_obj['directionstring'] = directionstring
     dest_obj['forecast'] = forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']
     dest_obj['address'] = destination.address
     dest_obj['city'] = destination.city
