@@ -55,6 +55,7 @@ class snowfall(Base):
 
 weather_key = os.environ.get("WUNDERGROUND_API_KEY")
 google_key = os.environ.get("GOOGLE_API_KEY")
+google_client_key = os.environ.get("GOOGLE_CLIENT_KEY")
 db_url = os.environ.get("DATABASE_URL")
 
 
@@ -112,9 +113,11 @@ def oauth2callback():
 def routeInfo():
   places = []
   this_user = sesh.query(user).first()
+  home = sesh.query(place).filter(place.id == this_user.place_id).first()
   user_places = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   for destination in user_places:
     destination = sesh.query(place).filter(place.id == destination.place_id).one()
+    directionstring = 'https://www.google.com/maps/embed/v1/directions?origin=' + home.address + '+' + home.city + '+' + home.state + '&destination=' + destination.address + '+' + destination.city + '+' + destination.state + '&key=' + GOOGLE_CLIENT_KEY
     accumulations = sesh.query(snowfall).filter(snowfall.place_id == destination.id).all()
     drives = sesh.query(travel_time).filter(travel_time.place_id == destination.id).all()
     allsnowfall = [];
@@ -138,6 +141,7 @@ def routeInfo():
     graphData = graphData[basecount-1:len(graphData)]
     forecast = unirest.get("http://api.wunderground.com/api/" + weather_key + "/forecast/q/" + destination.state + "/" + destination.city + ".json")
     dest_obj = {}
+    dest_obj['directionstring'] = destinationstring
     dest_obj['forecast'] = forecast.body['forecast']['simpleforecast']['forecastday'][0]['snow_allday']
     dest_obj['address'] = destination.address
     dest_obj['city'] = destination.city
