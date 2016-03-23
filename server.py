@@ -122,7 +122,7 @@ def routeInfo():
       allsnowfall.append(accumulation.snowfall);
     drive_time = [];
     for drive in drives:
-      drive_time.append(drive.travel_time);
+      drive_time.append(drive.travel_time/60);
     graphData = [];
     for i in range(len(drive_time) - 1):
       graphData.append({'snowfall': allsnowfall[i], 'nextdaydrive': drive_time[i+1]})
