@@ -156,8 +156,10 @@ def routeInfo():
 
 @app.route("/addroute", methods=['GET', 'POST'])
 def addRoute():
+  if request.method == 'POST':
  # this_user = sesh.query(user).first()
-  print request.form['newplace']
+    print request
+    return 'post it'
 
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
