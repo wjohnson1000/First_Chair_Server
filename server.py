@@ -188,6 +188,7 @@ def addRoute():
     get_new_place = sesh.query(place).last()
     new_user_place = user_place(user_id = this_user.id, place_id = get_new_place.id)
     sesh.add(new_user_place)
+    sesh.commit()
     
     return "New Route Added"
     
