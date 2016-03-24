@@ -153,7 +153,7 @@ def routeInfo():
 
 
 @app.route("/addroute")
-def routeInfo():
+def addRoute():
  # this_user = sesh.query(user).first()
   print request.form['newplace']
 
