@@ -158,7 +158,7 @@ def routeInfo():
 def addRoute():
   if request.method == 'POST':
  # this_user = sesh.query(user).first()
-    print request.form['destination']
+    print request.form
     return 'post it'
 
 if __name__ == "__main__":
