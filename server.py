@@ -164,7 +164,7 @@ def addRoute():
 @app.route("/autocomplete", methods=['GET', 'POST'])
 def autocomplete():
   if request.method == 'POST':
-    guesses = unirest.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Keystone+Ski+Area&key=AIzaSyC9CWQ9sZa0uVd0sYs-qo1K-xzq2jYH0qE")
+    guesses = unirest.get("https://maps.googleapis.com/maps/api/place/textsearch/json?query=Keystone+Ski+Area&key=AIzaSyC9CWQ9sZa0uVd0sYs-qo1K-xzq2jYH0qE")
     print guesses.body
     return jsonify(guesses.body)
     
