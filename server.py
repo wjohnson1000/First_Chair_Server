@@ -182,8 +182,10 @@ def addRoute():
     print add_route_city 
     print add_route_state 
     this_user = sesh.query(user).first()
-    new_dest = place(address = name, city = add_route_city, state = add_route_state)
+    new_place = place(address = name, city = add_route_city, state = add_route_state)
+    new_user_place = user_place(user_id = this_user.id, place_id = new_place.id)
     sesh.add(new_dest)
+    sesh.add(new_user_place)
     sesh.commit()
     
     return "New Route Added"
