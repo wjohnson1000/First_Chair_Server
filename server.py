@@ -23,7 +23,7 @@ class place(Base):
   address = Column(String)
   city = Column(String)
   state = Column(String(10))
-  is_destination = Column(Boolean, default=False)
+  is_destination = Column(Boolean, default=True)
 
 class user(Base):
   __tablename__ = 'user'
@@ -90,8 +90,8 @@ def index():
   if credentials.access_token_expired:
     return redirect(flask.url_for('oauth2callback'))
   else:
-    return redirect('http://127.0.0.1:8080/#/dashboard')
-    #return redirect('http://firstchair.club/#/dashboard')
+    #return redirect('http://127.0.0.1:8080/#/dashboard')
+    return redirect('http://firstchair.club/#/dashboard')
 
 
 @app.route('/callback')
@@ -107,8 +107,8 @@ def oauth2callback():
     token = jwt.encode({'auth_code': auth_code}, 'secret', algorithm='HS256')
     credentials = flow.step2_exchange(auth_code)
     session['credentials'] = credentials.to_json()
-    return redirect('http://127.0.0.1:8080/#/dashboard?token=' + token)
-#    return redirect('http://firstchair.club/#/dashboard?token=' + token)
+    #return redirect('http://127.0.0.1:8080/#/dashboard?token=' + token)
+    return redirect('http://firstchair.club/#/dashboard?token=' + token)
 
 @app.route("/dashboard")
 def routeInfo():
