@@ -164,7 +164,7 @@ def findroute():
 @app.route("/addroute", methods=['GET', 'POST'])
 def addRoute():
   if request.method == 'POST':
-    print request.data.destination.formatted_address
+    print request.data
     print request.data.destination.name
     add_route_city = ""
     add_route_state = ""
