@@ -170,7 +170,7 @@ def addRoute():
     for char in request.data['formatted_address']:
       commacount = 0
       if char == ",":
-        commacount++
+        commacount = commacount + 1
       if commacount == 1:
         add_route_city = add_route_city + char
       if commacount == 2:
