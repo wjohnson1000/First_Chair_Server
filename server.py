@@ -154,17 +154,16 @@ def routeInfo():
   return jsonify({'destinations': places})
 
 
-@app.route("/addroute", methods=['GET', 'POST'])
-def addRoute():
-  if request.method == 'POST':
- # this_user = sesh.query(user).first()
-    print request.data
-    return 'post it'
-
-@app.route("/autocomplete", methods=['GET', 'POST'])
-def autocomplete():
+@app.route("/findroute", methods=['GET', 'POST'])
+def findroute():
   if request.method == 'POST':
     guesses = unirest.get("https://maps.googleapis.com/maps/api/place/textsearch/json?query=" + request.data +"&key=AIzaSyC9CWQ9sZa0uVd0sYs-qo1K-xzq2jYH0qE")
+    print request.data
+    return jsonify(guesses.body)
+
+@app.route("/addroute", methods=['GET', 'POST'])
+def autocomplete():
+  if request.method == 'POST':
     print guesses.body
     return jsonify(guesses.body)
     
