@@ -164,11 +164,12 @@ def findroute():
 @app.route("/addroute", methods=['GET', 'POST'])
 def addRoute():
   if request.method == 'POST':
-    print request.data
+    print request.data.destination.formatted_address
+    print request.data.destination.name
     add_route_city = ""
     add_route_state = ""
     commacount = 0
-    for char in request.data['destination']['formatted_address']:
+    for char in request.data.destination.formatted_address:
       if char == ",":
         commacount = commacount + 1
         continue
@@ -178,7 +179,7 @@ def addRoute():
         add_route_state = add_route_state + char
     print add_route_city 
     print add_route_state 
-    add_route_address = request.data['name']
+    add_route_address = request.data.destination.name
     this_user = sesh.query(user).first()
     new_dest = place(address = add_route_address, city = add_route_city, state = add_route_state)
     sesh.add(new_dest)
