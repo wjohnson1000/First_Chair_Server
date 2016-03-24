@@ -161,6 +161,11 @@ def addRoute():
     print request.data
     return 'post it'
 
+@app.route("/autocomplete", methods=['GET', 'POST'])
+def autocomplete():
+  if request.method == 'GET':
+    guesses = unirest.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Keystone&key=AIzaSyC9CWQ9sZa0uVd0sYs-qo1K-xzq2jYH0qE")
+    return guesses
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
   import uuid
