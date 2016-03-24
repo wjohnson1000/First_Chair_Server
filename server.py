@@ -181,9 +181,8 @@ def addRoute():
         add_route_state = add_route_state + char
     print add_route_city 
     print add_route_state 
-    add_route_address = request.data.destination.name
     this_user = sesh.query(user).first()
-    new_dest = place(address = add_route_address, city = add_route_city, state = add_route_state)
+    new_dest = place(address = name, city = add_route_city, state = add_route_state)
     sesh.add(new_dest)
     sesh.commit()
     
