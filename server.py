@@ -185,7 +185,7 @@ def addRoute():
     new_place = place(address = name, city = add_route_city, state = add_route_state)
     sesh.add(new_place)
     sesh.commit()
-    get_new_place = sesh.query(place).orderBy(place.id.desc()).first()
+    get_new_place = sesh.query(place).order_by(place.id.desc()).first()
     new_user_place = user_place(user_id = this_user.id, place_id = get_new_place.id)
     sesh.add(new_user_place)
     sesh.commit()
