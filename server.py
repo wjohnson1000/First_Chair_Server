@@ -154,7 +154,7 @@ def routeInfo():
   return jsonify({'destinations': places})
 
 
-@app.route("/addroute")
+@app.route("/addroute", methods=['GET', 'POST'])
 def addRoute():
  # this_user = sesh.query(user).first()
   print request.form['newplace']
