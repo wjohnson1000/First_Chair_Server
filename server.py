@@ -165,7 +165,9 @@ def addRoute():
 def autocomplete():
   if request.method == 'POST':
     guesses = unirest.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Keystone&key=AIzaSyC9CWQ9sZa0uVd0sYs-qo1K-xzq2jYH0qE")
-    return guesses
+    print guesses.data
+    return guesses.data
+    
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
   import uuid
