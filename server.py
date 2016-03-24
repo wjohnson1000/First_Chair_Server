@@ -23,7 +23,7 @@ class place(Base):
   address = Column(String)
   city = Column(String)
   state = Column(String(10))
-  is_destination = Column(Boolean)
+  is_destination = Column(Boolean, default=False)
 
 class user(Base):
   __tablename__ = 'user'
@@ -162,10 +162,28 @@ def findroute():
     return jsonify(guesses.body)
 
 @app.route("/addroute", methods=['GET', 'POST'])
-def autocomplete():
+def addRoute():
   if request.method == 'POST':
-    print guesses.body
-    return jsonify(guesses.body)
+    print request.data
+    add_route_city = ""
+    add_route_state = ""
+    for char in request.data['formatted_address']:
+      commacount = 0
+      if char == ",":
+        commacount++
+      if commacount == 1:
+        add_route_city = add_route_city + char
+      if commacount == 2:
+        add_route_state = add_route_state + char
+    print add_route_city 
+    print add_route_state 
+    add_route_address = request.data['name']
+    this_user = sesh.query(user).first()
+    new_dest = place(address = add_route_address, city = add_route_city, state = add_route_state)
+    sesh.add(new_dest)
+    sesh.commit()
+    
+    return "New Route Added"
     
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
