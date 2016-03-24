@@ -164,13 +164,14 @@ def findroute():
 @app.route("/addroute", methods=['GET', 'POST'])
 def addRoute():
   if request.method == 'POST':
-    print request.data
+    print request.data['formatted_address']
     add_route_city = ""
     add_route_state = ""
+    commacount = 0
     for char in request.data['formatted_address']:
-      commacount = 0
       if char == ",":
         commacount = commacount + 1
+        continue
       if commacount == 1:
         add_route_city = add_route_city + char
       if commacount == 2:
