@@ -1,14 +1,16 @@
 from flask import *
 from flask.ext.cors import CORS
+from flask.ext.session import Session
 from operator import itemgetter, attrgetter, methodcaller
 import jwt
 import os
 import json
 import httplib2
 import unirest
-from apiclient import discovery
+import uuid
+from apiclient.discovery import build
 from oauth2client import client as client
-from oauth2client.contrib.flask_util import UserOAuth2
+from oauth2client.contrib.flask_util import *
 import datetime
 import psycopg2
 from sqlalchemy import *
@@ -30,8 +32,9 @@ class user(Base):
   id = Column(Integer, primary_key=True)
   google_id = Column(Integer)
   snowfall_alarm = Column(Integer)
-  travel_window = Column(String(10))
+  travel_window = Column(String(10), default='morning')
   place_id = Column(Integer, ForeignKey('place.id'))
+  set_home = Column(Boolean, default=False)
 
 class user_place(Base):
   __tablename__ = 'user_place'
@@ -58,7 +61,6 @@ google_key = os.environ.get("GOOGLE_API_KEY")
 google_client_key = os.environ.get("GOOGLE_CLIENT_KEY")
 db_url = os.environ.get("DATABASE_URL")
 
-
 client_info = {
   "web": {
     "client_id": os.environ.get("client_id"),
@@ -75,45 +77,70 @@ with open('secrets_from_env.json', 'w') as f:
   json.dump(client_info, f)
 
 app = Flask(__name__)
+app.config['SESSION_TYPE'] = 'null'
+app.secret_key = str(uuid.uuid4())
 CORS(app)
+app.config['GOOGLE_OAUTH2_CLIENT_SECRETS_FILE'] = 'client_secrets.json'
+
+oauth2 = UserOAuth2(app)
 
 engine = create_engine(db_url, echo=True)
 connection = engine.connect()
-Session = sessionmaker(bind=engine)
-sesh = Session()
+SQLSession = sessionmaker(bind=engine)
+sesh = SQLSession()
+
+mysecret = str(uuid.uuid4())
+
+@app.before_request
+def check_cred():
+  if str(request.url_rule) != '/callback' and str(request.url_rule) != '/logout':
+    print 'in the if'
+    print request.headers.get('Authorization')
+    if request.headers.get('Authorization') is None:
+      redirect(url_for('oauth2callback'))
+    else:
+      token_from_client = request.headers[('Authorization')]
+      try:
+        print "can i decode"
+        payload = jwt.decode(token_from_client, mysecret)
+      except jwt.InvalidTokenError:
+        print 'invalid token error'
+        redirect(url_for('oauth2callback'))
 
 @app.route("/")
 def index():
-  if 'credentials' not in session:
-    return redirect(url_for('oauth2callback'))
-  credentials = client.OAuth2Credentials.from_json(session['credentials'])
-  if credentials.access_token_expired:
-    return redirect(flask.url_for('oauth2callback'))
-  else:
-    #return redirect('http://127.0.0.1:8080/#/dashboard')
-    return redirect('http://firstchair.club/#/dashboard')
-
+  return redirect('http://firstchair.club/#/dashboard')
 
 @app.route('/callback')
 def oauth2callback():
-  flow = client.flow_from_clientsecrets('secrets_from_env.json',
-    scope='https://www.googleapis.com/auth/plus.login',
+  flow = client.flow_from_clientsecrets('client_secrets.json',
+    scope='profile',
     redirect_uri=url_for('oauth2callback', _external=True))
   if 'code' not in request.args:
     auth_uri = flow.step1_get_authorize_url()
     return redirect(auth_uri)
   else:
     auth_code = request.args.get('code')
-    token = jwt.encode({'auth_code': auth_code}, 'secret', algorithm='HS256')
     credentials = flow.step2_exchange(auth_code)
-    session['credentials'] = credentials.to_json()
-    #return redirect('http://127.0.0.1:8080/#/dashboard?token=' + token)
+    http_auth = credentials.authorize(httplib2.Http())
+    user_info = build('oauth2', 'v2', http=http_auth)
+    user_obj = user_info.userinfo().v2().me().get().execute()
+    goog_id = str(user_obj['id'])
+    my_jwt = jwt.encode({'google_id': goog_id}, mysecret, algorithm='HS256')
+    if sesh.query(user).filter(user.google_id == goog_id).first() == None:
+      sesh.add(user(google_id=goog_id, snowfall_alarm=5, place_id=1))
+      sesh.commit()
+    else:
+      print 'got em'
     return redirect('http://firstchair.club/#/dashboard?token=' + token)
 
 @app.route("/dashboard")
 def routeInfo():
+  token_from_client = request.headers[('Authorization')]
+  goog_id = jwt.decode(token_from_client, mysecret, algorithm='HS256')
+  goog_id = str(goog_id['google_id'])
+  this_user = sesh.query(user).filter(user.google_id == goog_id).first()
   places = []
-  this_user = sesh.query(user).first()
   home = sesh.query(place).filter(place.id == this_user.place_id).first()
   user_places = sesh.query(user_place).filter(user_place.user_id == this_user.id).all()
   for destination in user_places:
@@ -151,7 +178,7 @@ def routeInfo():
     dest_obj['travel_time'] = drive_time
     dest_obj['graph_data'] = graphData
     places.append(dest_obj)
-  return jsonify({'destinations': places})
+  return jsonify({'destinations': places, 'snowfall_alarm': this_user.snowfall_alarm, 'set_home': this_user.set_home})
 
 
 @app.route("/findroute", methods=['GET', 'POST'])
@@ -163,9 +190,13 @@ def findroute():
 
 @app.route("/addroute", methods=['GET', 'POST'])
 def addRoute():
+  token_from_client = request.headers[('Authorization')]
+  goog_id = jwt.decode(token_from_client, mysecret, algorithm='HS256')
+  goog_id = str(goog_id['google_id'])
+  this_user = sesh.query(user).filter(user.google_id == goog_id).first()
   if request.method == 'POST':
     formatted_address  = request.get_json()['desty']['formatted_address']
-    name  = request.get_json()['desty']['name']
+    name = request.get_json()['desty']['name']
     print formatted_address
     print name
     add_route_city = ""
@@ -181,7 +212,6 @@ def addRoute():
         add_route_state = add_route_state + char
     print add_route_city 
     print add_route_state 
-    this_user = sesh.query(user).first()
     new_place = place(address = name, city = add_route_city, state = add_route_state)
     sesh.add(new_place)
     sesh.commit()
@@ -189,14 +219,41 @@ def addRoute():
     new_user_place = user_place(user_id = this_user.id, place_id = get_new_place.id)
     sesh.add(new_user_place)
     sesh.commit()
-    
     return "New Route Added"
-    
+
+@app.route("/setalarm", methods=['PUT'])
+def setAlarm():
+  token_from_client = request.headers[('Authorization')]
+  goog_id = jwt.decode(token_from_client, mysecret, algorithm='HS256')
+  goog_id = str(goog_id['google_id'])
+  this_user = sesh.query(user).filter(user.google_id == goog_id).first()
+  set_alarm = request.get_json()['alarm']
+  print set_alarm
+  this_user.snowfall_alarm = set_alarm
+  sesh.commit()
+  return 'alarm updated'
+
+@app.route('/sethome', methods=['POST'])
+def sethome():
+  token_from_client = request.headers[('Authorization')]
+  goog_id = jwt.decode(token_from_client, mysecret, algorithm='HS256')
+  goog_id = str(goog_id['google_id'])
+  this_user = sesh.query(user).filter(user.google_id == goog_id).first()
+  home_address = request.get_json()['address']
+  home_city = request.get_json()['city']
+  home_state = request.get_json()['state']
+  this_user_home = place(address = home_address, city = home_city, state = home_state, is_destination = False)
+  sesh.add(this_user_home)
+  sesh.commit()
+  user_home_in_db = sesh.query(place).filter(place.address == this_user_home.address, place.city == this_user_home.city).first()
+  this_user.place_id = user_home_in_db.id
+  this_user.set_home = True
+  sesh.commit()
+  return 'home address set'
+
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
-  import uuid
-  app.secret_key = str(uuid.uuid4())
   #app.run(port=PORT, debug=True)
-  #0.0.0.0 FOR HEROKU
+  0.0.0.0 FOR HEROKU
   app.run(host='0.0.0.0', port=PORT, debug=True)
 
