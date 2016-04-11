@@ -80,7 +80,7 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'null'
 app.secret_key = str(uuid.uuid4())
 CORS(app)
-app.config['GOOGLE_OAUTH2_CLIENT_SECRETS_FILE'] = 'client_secrets.json'
+#app.config['GOOGLE_OAUTH2_CLIENT_SECRETS_FILE'] = 'client_secrets.json'
 
 oauth2 = UserOAuth2(app)
 
@@ -113,7 +113,7 @@ def index():
 
 @app.route('/callback')
 def oauth2callback():
-  flow = client.flow_from_clientsecrets('client_secrets.json',
+  flow = client.flow_from_clientsecrets('secrets_from_env.json',
     scope='profile',
     redirect_uri=url_for('oauth2callback', _external=True))
   if 'code' not in request.args:
