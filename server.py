@@ -254,6 +254,6 @@ def sethome():
 if __name__ == "__main__":
   PORT = int(os.environ.get("PORT", 5000))
   #app.run(port=PORT, debug=True)
-  0.0.0.0 FOR HEROKU
+  #0.0.0.0 FOR HEROKU
   app.run(host='0.0.0.0', port=PORT, debug=True)
 
