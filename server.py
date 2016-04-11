@@ -77,11 +77,11 @@ with open('secrets_from_env.json', 'w') as f:
   json.dump(client_info, f)
 
 app = Flask(__name__)
-CORS(app)
+cors = CORS(app)
 app.config['SESSION_TYPE'] = 'null'
 app.secret_key = str(uuid.uuid4())
 app.config['GOOGLE_OAUTH2_CLIENT_SECRETS_FILE'] = 'secrets_from_env.json'
-logging.getLogger('flask_cors').level = logging.DEBUG
+
 oauth2 = UserOAuth2(app)
 
 engine = create_engine(db_url, echo=True)
