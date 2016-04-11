@@ -132,7 +132,7 @@ def oauth2callback():
       sesh.commit()
     else:
       print 'got em'
-    return redirect('http://firstchair.club/#/dashboard?token=' + token)
+    return redirect('http://firstchair.club/#/dashboard?token=' + my_jwt)
 
 @app.route("/dashboard")
 def routeInfo():
