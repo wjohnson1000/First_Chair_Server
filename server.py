@@ -136,6 +136,7 @@ def oauth2callback():
     return redirect('http://firstchair.club/#/dashboard?token=' + my_jwt)
 
 @app.route("/dashboard")
+@cross_origin()
 def routeInfo():
   token_from_client = request.headers[('Authorization')]
   goog_id = jwt.decode(token_from_client, mysecret, algorithm='HS256')
