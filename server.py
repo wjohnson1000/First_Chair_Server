@@ -79,8 +79,8 @@ with open('secrets_from_env.json', 'w') as f:
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-app.config['SESSION_TYPE'] = 'null'
-app.secret_key = str(uuid.uuid4())
+#app.config['SESSION_TYPE'] = 'null'
+#app.secret_key = str(uuid.uuid4())
 app.config['GOOGLE_OAUTH2_CLIENT_SECRETS_FILE'] = 'secrets_from_env.json'
 
 oauth2 = UserOAuth2(app)
