@@ -77,7 +77,7 @@ with open('secrets_from_env.json', 'w') as f:
   json.dump(client_info, f)
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app)
 
 #app.config['SESSION_TYPE'] = 'null'
 #app.secret_key = str(uuid.uuid4())
